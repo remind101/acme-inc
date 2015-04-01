@@ -1,0 +1,11 @@
+#!/bin/sh
+
+packages="curl go git"
+
+apk add --update $packages
+
+GOPATH=/go go install github.com/remind101/acme-inc
+mv /go/bin/acme-inc /bin
+
+apk del $packages
+rm -rf /var/cache/apk/*
