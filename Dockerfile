@@ -1,9 +1,9 @@
-FROM remind101/go:1.4
+FROM alpine:3.1
 MAINTAINER Eric Holmes <eric@remind101.com>
 
-WORKDIR /go/src/github.com/remind101/acme-inc
 COPY ./ /go/src/github.com/remind101/acme-inc
-RUN go install ./...
-ENTRYPOINT ["/go/bin/acme-inc"]
+COPY ./bin/build /build
+RUN /build
+WORKDIR /go/src/github.com/remind101/acme-inc
 
-EXPOSE 8080
+CMD ["acme-inc"]
