@@ -17,11 +17,13 @@ func main() {
 	)
 	flag.Parse()
 
-	if len(os.Args) < 2 {
+	args := flag.Args()
+	if len(args) < 1 {
 		log.Fatal("You must specify the `server` or `worker` subcommand.")
 	}
 
-	cmd := os.Args[1]
+	cmd := args[0]
+
 	switch cmd {
 	case "server":
 		log.Printf("Starting on %s", *port)
@@ -36,7 +38,7 @@ func main() {
 			fmt.Printf("Hard work %d...\n", rand.Int())
 		}
 	default:
-		log.Fatalf("Unkown subcommand: %s", cmd)
+		log.Fatalf("Unknown subcommand: %s", cmd)
 	}
 }
 
