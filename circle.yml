@@ -22,6 +22,5 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker tag remind101/acme-inc remind101/acme-inc:$CIRCLE_SHA1
-      - docker tag remind101/acme-inc:$CIRCLE_SHA1 remind101/acme-inc:$(docker inspect -f '{{.Id}}' remind101/acme-inc:$CIRCLE_SHA1)
       - docker images
       - docker push remind101/acme-inc
