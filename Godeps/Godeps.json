@@ -1,8 +1,0 @@
-{
-	"ImportPath": "github.com/remind101/acme-inc",
-	"GoVersion": "go1.3",
-	"Packages": [
-		"./..."
-	],
-	"Deps": []
-}
