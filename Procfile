@@ -34,3 +34,6 @@ worker16:
   command: acme-inc worker
 worker17:
   command: acme-inc worker
+scheduled-job:
+  command: acme-inc worker
+  cron: '0/10 * * * * *'
