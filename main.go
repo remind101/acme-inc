@@ -24,18 +24,25 @@ func main() {
 
 	cmd := args[0]
 
+	webString := env("WEB_STRING", "Default header")
+	workerString := env("WORKER_STRING", "Default header")
+	hostname, _ := os.Hostname()
+
+	log.Printf("[%s] Starting %s process.\n", hostname, cmd)
+
 	switch cmd {
 	case "server":
 		log.Printf("Starting on %s", *port)
 		log.Fatal(http.ListenAndServe(":"+*port, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			log.Printf("%s - %s", r.Method, r.URL)
+			now := time.Now()
+			log.Printf("[%s] %s: %s - %s", hostname, webString, r.Method, r.URL)
 			w.WriteHeader(200)
-			io.WriteString(w, "Ok\n")
+			io.WriteString(w, fmt.Sprintf("[%s %s] %s: Ok\n", now, hostname, webString))
 		})))
 	case "worker":
 		for {
 			<-time.After(1 * time.Second)
-			fmt.Printf("Hard work %d...\n", rand.Int())
+			log.Printf("[%s] %s: Hard work %d...\n", hostname, workerString, rand.Int())
 		}
 	default:
 		log.Fatalf("Unknown subcommand: %s", cmd)
