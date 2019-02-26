@@ -1,5 +1,8 @@
-web: acme-inc server
-worker: acme-inc worker
+web:
+  acme-inc server
+
+worker:
+  acme-inc worker
 
 # Allows bash terminal access
 bash:
