@@ -1,0 +1,31 @@
+version: 2
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - docker_image:
+          context: docker-hub
+      - test
+
+jobs:
+  # docker-build is a small script for building, tagging and pushing docker images within CircleCI.
+  docker_image:
+    docker:
+      # https://github.com/remind101/docker-build/commits/5af523d5343bb852aa41c56b47dd470b9d3beccd
+      - image: remind101/docker-build@sha256:d8087702ebd201855dd98dff98bb122a2cb18149edb1e1d6ee3b09e635b0f43b
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker-build # build, tag and push
+
+  test:
+    working_directory: /go/src/github.com/remind101/acme-inc
+    docker:
+      # Primary container image where all the steps run.
+      - image: circleci/golang:1.10
+
+    steps:
+      - checkout
+      - run: make build
+      - run: go test
