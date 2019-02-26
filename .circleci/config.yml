@@ -27,5 +27,4 @@ jobs:
 
     steps:
       - checkout
-      - run: make build
       - run: go test
