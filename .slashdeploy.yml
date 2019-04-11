@@ -10,4 +10,4 @@ environments:
         - "ci/circleci: docker_image"
   staging:
     continuous_delivery:
-<<: *cd
+      <<: *cd
