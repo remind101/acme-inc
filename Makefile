@@ -1,4 +1,4 @@
 .PHONY: build
 
 build:
-	docker build --no-cache -t remind101/acme-inc .
+	docker build -t remind101/acme-inc .
