@@ -1,0 +1,9 @@
+version: '3.6'
+
+services:
+  acme-inc:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/go/src/github.com/remind101/acme-inc

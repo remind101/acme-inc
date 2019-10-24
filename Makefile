@@ -1,4 +1,7 @@
-.PHONY: build
+.PHONY: build build-envoy
 
 build:
-	docker build -t remind101/acme-inc .
+	docker build --no-cache -t remind101/acme-inc .
+
+build-envoy:
+	docker build -t remind101/acme-inc:envoy .
