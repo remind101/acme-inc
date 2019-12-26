@@ -4,6 +4,9 @@ web:
 worker:
   command: acme-inc worker
 
+secondweb:
+  command: acme-inc server
+
 # Allows bash terminal access
 bash:
   command: bash
