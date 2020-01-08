@@ -6,9 +6,9 @@ worker:
 
 # Allows bash terminal access
 bash:
-  command: bash
+  command: /bin/bash
   noservice: true
 
 console:
-  command: bash
+  command: /bin/bash
   noservice: true
