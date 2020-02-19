@@ -3,6 +3,10 @@ web:
 
 worker:
   command: acme-inc worker
+  
+# this is an example of a broken service worker used for testing alarms.
+broken:
+  command: acme-inc invalid
 
 # Allows bash terminal access
 bash:
