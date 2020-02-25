@@ -8,6 +8,7 @@ environments:
       required_contexts:
         - "ci/circleci: test"
         - "ci/circleci: docker_image"
+        - "ci/circleci: docker_image_and_vuln_scanning_with_ecr"
   staging:
     continuous_delivery:
       <<: *cd
