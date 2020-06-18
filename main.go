@@ -37,7 +37,7 @@ func main() {
 			now := time.Now()
 			log.Printf("[%s] %s: %s - %s", hostname, webString, r.Method, r.URL)
 			w.WriteHeader(200)
-			io.WriteString(w, fmt.Sprintf("[%s %s] %s: Ok\n", now, hostname, webString))
+			io.WriteString(w, fmt.Sprintf("[%s %s] %s: Not really ok\n", now, hostname, webString))
 		})))
 	case "worker":
 		for {
