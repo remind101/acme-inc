@@ -1,4 +1,4 @@
 .PHONY: build
 
 build:
-	docker build -t remind101/acme-inc .
+	docker build --force-rm -t remind101/acme-inc .
