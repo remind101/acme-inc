@@ -7,7 +7,7 @@ orbs:
   # https://circleci.com/orbs/registry/orb/circleci/aws-ecr
   # required environment variables:
   # https://circleci.com/docs/2.0/ecs-ecr/#configure-circleci-environment-variables
-  aws-ecr: circleci/aws-ecr@6.7.0
+  aws-ecr: circleci/aws-ecr@7.0.0
 
 workflows:
   version: 2
