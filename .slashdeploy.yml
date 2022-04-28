@@ -3,6 +3,8 @@
 ---
 environments:
   production:
+    aliases:
+      - prod
     continuous_delivery: &cd
       ref: refs/heads/master
       required_contexts:
@@ -10,5 +12,7 @@ environments:
         - "ci/circleci: docker_image"
         - "ci/circleci: docker_image_and_vuln_scanning_with_ecr"
   staging:
+    aliases:
+      - stage
     continuous_delivery:
-      <<: *cd
+      !!merge <<: *cd
