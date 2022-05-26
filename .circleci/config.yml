@@ -7,7 +7,7 @@ orbs:
   # https://circleci.com/orbs/registry/orb/circleci/aws-ecr
   # required environment variables:
   # https://circleci.com/docs/2.0/ecs-ecr/#configure-circleci-environment-variables
-  aws-ecr: circleci/aws-ecr@6.15.3
+  aws-ecr: circleci/aws-ecr@8.1.2
 
 workflows:
   version: 2
@@ -32,6 +32,36 @@ workflows:
           tag: "latest,$CIRCLE_BRANCH,$CIRCLE_SHA1"
           # create the AWS ECR repo if it does not exist already.
           create-repo: true
+          lifecycle-policy-path: >
+            {
+              "rules": [
+                {
+                  "rulePriority": 1,
+                  "description": "Keep latest master image",
+                  "selection": {
+                    "tagStatus": "tagged",
+                    "tagPrefixList": ["master", "main"],
+                    "countType": "imageCountMoreThan",
+                    "countNumber": 5
+                  },
+                  "action": {
+                    "type": "expire"
+                  }
+                },
+                {
+                  "rulePriority": 2,
+                  "description": "Expire all images older than 90 days.",
+                  "selection": {
+                    "countType": "sinceImagePushed",
+                    "countNumber": 90,
+                    "countUnit": "days"
+                  },
+                  "action": {
+                    "type": "expire"
+                  }
+                }
+              ]
+            }
           # provide the aws-ecr context (environment variables) to push docker_image into ecr.
           # https://circleci.com/docs/2.0/ecs-ecr/#configure-circleci-environment-variables
           context: aws-ecr
