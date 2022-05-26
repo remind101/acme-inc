@@ -28,12 +28,17 @@ workflows:
           #
           # The AWS ECR repo name, example: remind101/acme-inc
           repo: "$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-          # tags for this image, comma separated.
-          tag: "latest,$CIRCLE_BRANCH,$CIRCLE_SHA1"
+          # tags for this image, comma separated. A composite of branch+sha1 is
+          # added so the lifecycle rule (below) can filter images beginning
+          # with "master" or "main" to avoid applying aggressive rules.
+          tag: "latest,$CIRCLE_BRANCH,$CIRCLE_SHA1,$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
           # create the AWS ECR repo if it does not exist already.
           create-repo: true
           # Set the lifecycle for the repo. Note that this setting expects
           # an inline policy, even if it's named "-path".
+          # The max count for master and main is set to 8,000, 80% of the}
+          # available space in the repo, in order to safeguard against removing
+          # running images after aggressive rebuilding of the master branch.
           lifecycle-policy-path: >
             {
               "rules": [
@@ -44,7 +49,7 @@ workflows:
                     "tagStatus": "tagged",
                     "tagPrefixList": ["master", "main"],
                     "countType": "imageCountMoreThan",
-                    "countNumber": 5
+                    "countNumber": 8000
                   },
                   "action": {
                     "type": "expire"
