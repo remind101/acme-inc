@@ -7,7 +7,7 @@ orbs:
   # https://circleci.com/orbs/registry/orb/circleci/aws-ecr
   # required environment variables:
   # https://circleci.com/docs/2.0/ecs-ecr/#configure-circleci-environment-variables
-  aws-ecr: circleci/aws-ecr@6.15.3
+  aws-ecr: circleci/aws-ecr@8.1.2
 
 workflows:
   version: 2
@@ -28,10 +28,47 @@ workflows:
           #
           # The AWS ECR repo name, example: remind101/acme-inc
           repo: "$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-          # tags for this image, comma separated.
-          tag: "latest,$CIRCLE_BRANCH,$CIRCLE_SHA1"
+          # tags for this image, comma separated. A composite of branch+sha1 is
+          # added so the lifecycle rule (below) can filter images beginning
+          # with "master" or "main" to avoid applying aggressive rules.
+          tag: "latest,$CIRCLE_BRANCH,$CIRCLE_SHA1,$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM"
           # create the AWS ECR repo if it does not exist already.
           create-repo: true
+          # Set the lifecycle for the repo. Note that this setting expects
+          # an inline policy, even if it's named "-path".
+          # The max count for master and main is set to 8,000, 80% of the}
+          # available space in the repo, in order to safeguard against removing
+          # running images after aggressive rebuilding of the master branch.
+          lifecycle-policy-path: >
+            {
+              "rules": [
+                {
+                  "rulePriority": 1,
+                  "description": "Keep latest master image",
+                  "selection": {
+                    "tagStatus": "tagged",
+                    "tagPrefixList": ["master", "main"],
+                    "countType": "imageCountMoreThan",
+                    "countNumber": 8000
+                  },
+                  "action": {
+                    "type": "expire"
+                  }
+                },
+                {
+                  "rulePriority": 2,
+                  "description": "Expire all images older than 90 days.",
+                  "selection": {
+                    "countType": "sinceImagePushed",
+                    "countNumber": 90,
+                    "countUnit": "days"
+                  },
+                  "action": {
+                    "type": "expire"
+                  }
+                }
+              ]
+            }
           # provide the aws-ecr context (environment variables) to push docker_image into ecr.
           # https://circleci.com/docs/2.0/ecs-ecr/#configure-circleci-environment-variables
           context: aws-ecr
