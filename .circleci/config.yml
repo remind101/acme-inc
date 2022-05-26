@@ -32,6 +32,8 @@ workflows:
           tag: "latest,$CIRCLE_BRANCH,$CIRCLE_SHA1"
           # create the AWS ECR repo if it does not exist already.
           create-repo: true
+          # Set the lifecycle for the repo. Note that this setting expects
+          # an inline policy, even if it's named "-path".
           lifecycle-policy-path: >
             {
               "rules": [
