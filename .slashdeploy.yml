@@ -11,8 +11,8 @@ environments:
         - "ci/circleci: test"
         - "ci/circleci: docker_image"
         - "ci/circleci: docker_image_and_vuln_scanning_with_ecr"
-  staging:
-    aliases:
-      - stage
-    continuous_delivery:
-      !!merge <<: *cd
+  # staging:
+  #   aliases:
+  #     - stage
+  #   continuous_delivery:
+  #     !!merge <<: *cd
