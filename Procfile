@@ -16,3 +16,7 @@ bash:
 console:
   command: /bin/bash
   noservice: true
+
+foobar:
+  command: /bin/bash
+  noservice: true
