@@ -1,29 +1,18 @@
 version: 2.1
 
+orbs:
+  docker-build: remind101/docker-build@0
+
 workflows:
   build-and-test:
     jobs:
-      - docker_image:
+      - docker-build/build-push:
           context:
             - docker-hub
             - aws-ecr
       - test
 
 jobs:
-  # docker-build is a small script for building, tagging and pushing docker images within CircleCI.
-  docker_image:
-    docker:
-      # build docker images and push them into a remote docker hub.
-      # https://github.com/remind101/docker-build/commit/14dd62612ce706f4cd5350bb9f02a51e817f9c4a
-      - image: remind101/docker-build@sha256:b035f1b056c4186ebda5faa5979d2f9c4c3a14ed9ff8b5b5b1e0f125a9afea0d
-    environment:
-      DOCKER_BUILDKIT: 1
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.14
-      - run: docker-build --ecr # build, tag and push
-
   test:
     working_directory: /go/src/github.com/remind101/acme-inc
     docker:
