@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  docker-build: remind101/docker-build@1
+  docker-build: remind101/docker-build@dev:ce1fe1bb992246b2684f1e50d2e8c028365038e6
 
 workflows:
   build-and-test:
