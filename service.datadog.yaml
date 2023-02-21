@@ -1,6 +1,0 @@
-schema-version: v2
-dd-service: acme-inc
-links:
-  - type: dashboard
-    name: App Overview
-    url: https://app.datadoghq.com/dashboard/fjr-y8r-qf9/app-overview?tpl_var_app%5B0%5D=acme-inc

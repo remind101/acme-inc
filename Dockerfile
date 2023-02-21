@@ -1,9 +1,8 @@
-FROM golang:1.7.1-alpine
-MAINTAINER Eric Holmes <eric@remind101.com>
+FROM golang:1.19-alpine
 
-WORKDIR /go/src/github.com/remind101/acme-inc
+WORKDIR /usr/src/acme-inc
 
 CMD ["acme-inc", "server"]
 
-COPY . /go/src/github.com/remind101/acme-inc
-RUN go install github.com/remind101/acme-inc
+COPY . .
+RUN go build -v -o /usr/local/bin/acme-inc ./...
