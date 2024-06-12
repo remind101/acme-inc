@@ -1,3 +1,4 @@
+# yamllint disable rule:line-length
 version: 2.1
 
 orbs:
@@ -12,6 +13,9 @@ workflows:
             - docker-hub
             - aws-ecr
       - test
+  parentsquare:
+    jobs:
+      - build-push-ps
 
 jobs:
   test:
@@ -22,3 +26,41 @@ jobs:
     steps:
       - checkout
       - run: go test
+  build-push-ps:
+    docker: 
+      # Pinning to alpine 3.19 for now because the aws-cli package is disabled
+      # in 3.20:
+      # https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.20.0#aws-cli
+      - image: library/docker:26.1.3-cli-alpine3.19
+    steps:
+      - run: apk --update add aws-cli git
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: "Build and push to ECR"
+          command: |
+            export AWS_CONFIG_FILE="${PWD}/.circleci/aws.config"
+            echo $CIRCLE_OIDC_TOKEN_V2 > /oidc-token
+
+            ecr_registry="256327093725.dkr.ecr.us-east-1.amazonaws.com" # core account
+
+            aws ecr get-login-password --region us-east-1 \
+              | docker login --password-stdin --username AWS "$ecr_registry"
+
+            docker buildx create \
+              --name container \
+              --driver docker-container \
+              --use
+
+            branch_tag="$(echo -n "$CIRCLE_BRANCH" | tr -c '[:alnum:]-._' '-')"
+            docker buildx build \
+              --cache-to mode=max,image-manifest=true,oci-mediatypes=true,type=registry,ref=${ecr_registry}/acme-inc:cache \
+              --cache-from type=registry,ref=${ecr_registry}/acme-inc:cache \
+              -o type=registry,name=${ecr_registry}/acme-inc:${branch_tag}-${CIRCLE_BUILD_NUM} \
+              -o type=registry,name=${ecr_registry}/acme-inc:${CIRCLE_SHA1} \
+              -o type=registry,name=${ecr_registry}/acme-inc:${branch_tag} \
+              -o type=registry,name=${ecr_registry}/acme-inc:latest \
+              -f Dockerfile \
+              .
+
